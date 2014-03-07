@@ -1,0 +1,9 @@
+XBI User Guide
+==============
+Edward Niescior <edniescior@gmail.com>
+v1.0, 2014-03
+
+Unit Testing
+------------
+
+Unit testing Pentaho jobs and transformations is tricky, but essential. The smallest changes in a step configuration can have major repercussions on the output of the transformation or job. 
