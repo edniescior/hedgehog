@@ -1,9 +1,24 @@
 XBI User Guide
 ==============
 Edward Niescior <edniescior@gmail.com>
-v1.0, 2014-03
+v1.0, March 2014
 
 Unit Testing
 ------------
 
-Unit testing Pentaho jobs and transformations is tricky, but essential. The smallest changes in a step configuration can have major repercussions on the output of the transformation or job. 
+Unit testing Pentaho jobs and transformations is tricky, but essential. The smallest changes in the configuration of a step can have major repercussions on the output of the transformation or job. It is important that the following holds true,
+
+the output reflects the business requirements accurately. i.e. your expected output needs to be correct.
+
+the output must be the same irrespective of the number of times the process is repeated: all external influences on the unit test must be expunged.
+
+The addition or removal of business logic will not cause remaining business logic to fail.
+
+Tests must be able to be automated.
+
+when we apply defined business logic to a given data set the output a) will be identical no matter how many times the process is repeated and b) matches the expected result in terms of the business requirement.
+
+For unit testing to be adopted by the team, the following requirements must be met:
+
+easy to execute.
+easy to install and configure.

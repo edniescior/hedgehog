@@ -1,4 +1,4 @@
-package com.comcast.xbi;
+package xbi.testutils;
 
 import java.io.File;
 
