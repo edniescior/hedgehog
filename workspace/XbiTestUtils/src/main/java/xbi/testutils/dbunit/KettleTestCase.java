@@ -17,6 +17,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.di.core.CheckResultInterface;
+import org.pentaho.di.core.encryption.Encr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,19 +71,12 @@ public abstract class KettleTestCase {
 
 			// Note that the following system properties are set via the
 			// kettle.properties file under KETTLE_HOME
-			// String url = "jdbc:postgresql://" +
-			// System.getProperty(getPropertyPrefix() + ".db.host") + "/" +
-			// System.getProperty(getPropertyPrefix() + ".db.name");
-			// String username = System.getProperty(getPropertyPrefix() +
-			// ".db.username");
-			// String password =
-			// Encr.decryptPasswordOptionallyEncrypted(System.getProperty(getPropertyPrefix()
-			// + ".db.password"));
-
-			String url = "jdbc:oracle:thin:@(DESCRIPTION= (ADDRESS_LIST= (LOAD_BALANCE=yes) (ADDRESS= (PROTOCOL=TCP) (HOST=ccpscn-dt-a-dqi.dt.ccp.cable.comcast.com) (PORT=1521) ) ) (CONNECT_DATA= (FAILOVER_MODE= (TYPE=select) (METHOD=basic) (RETRIES=180) (DELAY=5) ) (SERVER=dedicated) (SERVICE_NAME=DXBID_SERV.dt.ccp.cable.comcast.com) ) )";
-			String username = "eniescior";
-			String password = "k8Zj6l";
-			String schema = "eniescior";
+			// Hard-coded to use Oracle, but that could be made configurable.
+			String url = "jdbc:oracle:thin:@" + System.getProperty("XBIS_DBNAME");
+			String username = System.getProperty("XBIS_STG_USER");
+			String password = Encr.decryptPasswordOptionallyEncrypted(System
+					.getProperty("XBIS_STG_PASSWORD"));
+			String schema = System.getProperty("XBIS_STG_SCHEMA");
 
 			connector = new Connector(url, username, password, schema);
 
