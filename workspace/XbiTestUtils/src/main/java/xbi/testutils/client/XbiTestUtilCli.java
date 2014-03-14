@@ -208,7 +208,7 @@ public class XbiTestUtilCli {
 	}
 
 	public static void printUsage() {
-		String exe = "java xbi.testutils.TestClient";
+		String exe = "java -jar XbiTestUtils-1.0-SNAPSHOT.jar";
 		StringBuffer usage = new StringBuffer();
 		usage.append("\nUsage: " + exe + " <options>\n");
 		usage.append("\n");
@@ -225,6 +225,10 @@ public class XbiTestUtilCli {
 		usage.append("DBUnit executes a truncate for each table it finds in a data file. For example, if you have .\n");
 		usage.append("data for TABLE_A in both FILE_A and FILE_B, FILE_A.TABLE_A data will be deleted \n");
 		usage.append("when FILE_B is loaded! \n");
+		usage.append("\n");
+		usage.append("Note: This utility relies on kettle.properties in KETTLE_HOME for configuration. It uses the \n");
+		usage.append("following entries to connect to the DB: XBIS_DBNAME, XBIS_STG_USER, XBIS_STG_PASSWORD \n");
+		usage.append("(encrypted) and XBIS_STG_SCHEMA. It is hard-coded to only work with Oracle.\n");
 		usage.append("\n");
 		usage.append("Options:\n");
 		usage.append("  -h\t\t\tshow this help message and exit\n");
