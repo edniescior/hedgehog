@@ -114,12 +114,6 @@ public abstract class KettleTestCase {
 	protected abstract void afterSetup();
 
 	/**
-	 * @return The prefix used to separate properties for different applications
-	 *         and databases, e.g., 'analytics'
-	 */
-	protected abstract String getPropertyPrefix();
-
-	/**
 	 * Compare a database table to a DBUnit XML file
 	 * 
 	 * @param tableName

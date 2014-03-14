@@ -25,11 +25,6 @@ public class SampleTransformationTest extends KettleTestCase {
 				"/Users/eniesc200/Work/Pentaho/test_table_in_ab.xml"));
 	}
 
-	@Override
-	protected String getPropertyPrefix() {
-		return "xbi";
-	}
-
 	@Test
 	public void sampleTransformation() throws Exception {
 		assertComplete();
