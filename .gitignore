@@ -35,3 +35,5 @@
 ######################
 .classpath
 .project
+target/
+dependency-reduced-pom.xml
