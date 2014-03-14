@@ -1,4 +1,4 @@
-package xbi.testutils;
+package xbi.testutils.client;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,10 +13,10 @@ import xbi.testutils.dbunit.Connector;
 import xbi.testutils.kettle.Runner;
 import xbi.testutils.kettle.RunnerFactory;
 
-public class TestClient {
+public class XbiTestUtilCli {
 
 	private static final Logger LOGGER = LoggerFactory
-			.getLogger(TestClient.class);
+			.getLogger(XbiTestUtilCli.class);
 
 	private static enum Mode {
 		EXE, LOAD, DUMP, NONE;
@@ -257,7 +257,7 @@ public class TestClient {
 
 		int c;
 		StringBuffer optsStr = new StringBuffer("CLI options: ");
-		TestClient client = new TestClient();
+		XbiTestUtilCli client = new XbiTestUtilCli();
 		try {
 			ROOT: while ((c = getopt.getNextOption()) != -1) {
 				String optArg = getopt.getOptionArg();
