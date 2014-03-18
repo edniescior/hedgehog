@@ -1,14 +1,16 @@
 package xbi.testutils.client;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.xalan.xsltc.cmdline.getopt.GetOpt;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
 import org.pentaho.di.core.encryption.Encr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import xbi.testutils.dbunit.ConfigurableKettleTestCase;
 import xbi.testutils.dbunit.Connector;
 import xbi.testutils.kettle.Runner;
 import xbi.testutils.kettle.RunnerFactory;
@@ -67,11 +69,18 @@ public class XbiTestUtilCli {
 				LOGGER.info("Loading " + infile.getAbsolutePath());
 				connector.loadDataSet(infile);
 			}
+		} else if (this.configurables.getMode() == Configurables.Mode.EXE) {
+			ConfigurableKettleTestCase.addConfigurable(this.configurables);
+			Result result = JUnitCore.runClasses(ConfigurableKettleTestCase.class);
+			for (Failure failure : result.getFailures()) {
+				LOGGER.error(failure.toString());
+			}
+			LOGGER.info("Test success?  " + result.wasSuccessful());
 		}
 	}
 
 	public static void printUsage() {
-		String exe = "java -jar XbiTestUtils-1.0-SNAPSHOT.jar";
+		String exe = "java -jar XbiTestUtils-1.1.jar";
 		StringBuffer usage = new StringBuffer();
 		usage.append("\nUsage: " + exe + " <options>\n");
 		usage.append("\n");
