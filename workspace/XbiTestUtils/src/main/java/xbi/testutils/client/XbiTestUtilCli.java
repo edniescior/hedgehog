@@ -80,7 +80,7 @@ public class XbiTestUtilCli {
 	}
 
 	public static void printUsage() {
-		String exe = "java -jar XbiTestUtils-1.1.jar";
+		String exe = "java -jar XbiTestUtils-1.2.jar";
 		StringBuffer usage = new StringBuffer();
 		usage.append("\nUsage: " + exe + " <options>\n");
 		usage.append("\n");
@@ -191,9 +191,8 @@ public class XbiTestUtilCli {
 		LOGGER.info(optsStr.toString());
 		LOGGER.info(client.configurables.toString());
 
-		client.configurables.validate();
-
 		try {
+			client.configurables.validate();
 			client.run();
 		} catch (Exception e) {
 			LOGGER.error(

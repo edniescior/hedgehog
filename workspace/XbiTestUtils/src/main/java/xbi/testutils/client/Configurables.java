@@ -111,7 +111,77 @@ public class Configurables {
 	 *             if this thing is not configured correctly
 	 */
 	public void validate() {
-		LOGGER.info("validate -TO DO");
+		StringBuffer buffer = new StringBuffer();
+		// null mode
+		if (this.mode == Mode.NONE) {
+			buffer.append("No mode set. You must set a mode (-x (EXECUTE), -l (LOAD) or -d (DUMP)). ");
+		}
+		// load mode
+		else if (this.mode == Mode.LOAD)
+			// are there input files and do they exist?
+			if (getInFiles().isEmpty()) {
+				buffer.append("No input files passed in for LOAD. Use the -i flag to provide input files. ");
+			} else {
+				for (File f : getInFiles()) {
+					if (!(f.exists() && f.canRead())) {
+						buffer.append("The input file " + f.getAbsolutePath()
+								+ " does not exist or is not readable. ");
+					}
+				}
+			}
+		// dump mode
+		else if (this.mode == Mode.DUMP) {
+			// are there output files provided
+			if (getOutFiles().isEmpty()) {
+				buffer.append("No output files passed in for DUMP. Use the -o flag to provide output files. ");
+			}
+			// is there a table name provided
+			if (getTargetTables().isEmpty()) {
+				buffer.append("No target table names passed in for DUMP. Use the -t flag to provide table names. ");
+			}
+			// is there a query provided
+			if (getSql() == null) {
+				buffer.append("No SQL query passed in for DUMP. Use the -s flag to provide a query. ");
+			}
+		}
+		// execute mode
+		else if (this.mode == Mode.EXE) {
+			// is there a valid readable KJB/KTR
+			if (!(getXmlFile().exists() && getXmlFile().canRead())) {
+				buffer.append("The XML file " + getXmlFile().getAbsolutePath()
+						+ " does not exist or is not readable. ");
+			}
+			// are there input files and do they exist
+			if (getInFiles().isEmpty()) {
+				buffer.append("No input files passed in for EXECUTE. Use the -i flag to provide input files. ");
+			} else {
+				for (File f : getInFiles()) {
+					if (!(f.exists() && f.canRead())) {
+						buffer.append("The input file " + f.getAbsolutePath()
+								+ " does not exist or is not readable. ");
+					}
+				}
+			}
+			// are there expected output files and do they exist
+			if (getOutFiles().isEmpty()) {
+				buffer.append("No expected output files passed in for EXECUTE. Use the -o flag to provide expected output files. ");
+			} else {
+				for (File f : getOutFiles()) {
+					if (!(f.exists() && f.canRead())) {
+						buffer.append("The expected output file " + f.getAbsolutePath()
+								+ " does not exist or is not readable. ");
+					}
+				}
+			}
+			// are there target tables provided
+			if (getTargetTables().isEmpty()) {
+				buffer.append("No target table names passed in for EXECUTE. Use the -t flag to provide table names. ");
+			}
+		}
+
+		if (buffer.length() > 0) {
+			throw new IllegalStateException(buffer.toString());
+		}
 	}
 
 	public String toString() {
