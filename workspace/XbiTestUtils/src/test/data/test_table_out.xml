@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <test_table_out NAME="FOO" CODE="F" SOME_DATE="1972-05-01 00:00:00.0" SOME_NUMBER="1234"/>
+  <test_table_out NAME="BAR" CODE="B" SOME_DATE="1970-02-14 00:00:00.0" SOME_NUMBER="4321"/>
+  <test_table_out2 NAME="FOO" CODE="F"/>
+</dataset>

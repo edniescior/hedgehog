@@ -12,9 +12,6 @@ import org.slf4j.LoggerFactory;
  */
 public class Configurables {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(Configurables.class);
-
 	public static enum Mode {
 		EXE, LOAD, DUMP, NONE;
 	}
@@ -172,10 +169,6 @@ public class Configurables {
 								+ " does not exist or is not readable. ");
 					}
 				}
-			}
-			// are there target tables provided
-			if (getTargetTables().isEmpty()) {
-				buffer.append("No target table names passed in for EXECUTE. Use the -t flag to provide table names. ");
 			}
 		}
 

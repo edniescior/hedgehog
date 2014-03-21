@@ -21,7 +21,11 @@ public class XbiTestUtilCli {
 			.getLogger(XbiTestUtilCli.class);
 
 	// CLI options for this run.
-	private Configurables configurables = new Configurables();
+	private Configurables configurables;
+	
+	public XbiTestUtilCli() {
+		configurables = new Configurables();
+	}
 
 	/**
 	 * Execute what needs to be run. What actually runs will depend on the mode.
@@ -29,7 +33,7 @@ public class XbiTestUtilCli {
 	void run() throws Exception {
 
 		// this will init the kettle environment and check for kettle.properties
-		Runner runner = RunnerFactory.createRunner(new File(""));
+		RunnerFactory.createRunner(new File(""));
 
 		// Note that the following system properties are set via the
 		// kettle.properties file under KETTLE_HOME
@@ -80,7 +84,7 @@ public class XbiTestUtilCli {
 	}
 
 	public static void printUsage() {
-		String exe = "java -jar XbiTestUtils-1.2.jar";
+		String exe = "java -jar XbiTestUtils-<version>.jar";
 		StringBuffer usage = new StringBuffer();
 		usage.append("\nUsage: " + exe + " <options>\n");
 		usage.append("\n");
@@ -89,6 +93,11 @@ public class XbiTestUtilCli {
 		usage.append("The input data will be loaded during set up. The artifact will then be run.\n");
 		usage.append("Finally, the output produced by running the artifact will be compared to the output test\n");
 		usage.append("data passed in on the command line. The results are printed to STDOUT.\n");
+		usage.append("\n");
+		usage.append("Expected results can be either combined into a single XML file or split into multiple files. \n");
+		usage.append("If multiple files are used (passed in as a comma-delimited list with the -o flag) then the \n");
+		usage.append("number of files must be equal to the number of target tables (passed in with the -t flag) that \n");
+		usage.append("you are testing against. Typically, it is easier to combine them into a single file. \n");
 		usage.append("\n");
 		usage.append("The utility also provides methods to a) load input data (i.e. just execute the set up)\n");
 		usage.append("and b) write out data from database tables to XML format.\n");
@@ -105,9 +114,9 @@ public class XbiTestUtilCli {
 		usage.append("Options:\n");
 		usage.append("  -h\t\t\tshow this help message and exit\n");
 		usage.append("  -x XML_FILE\t\texecute the Kettle artifact XML_FILE\n");
-		usage.append("  -i IN_FILE\t\tpath to the input (set-up test data) XML file(s). Comma-delimited for multiple files\n");
-		usage.append("  -o OUT_FILE\t\tpath to the output (expected results) XML file(s). Comma-delimited for multiple files\n");
-		usage.append("  -t TARGET\t\ttarget table(s) to verify expected results. Comma-delimited for multiple files. Will be added to the clean list\n");
+		usage.append("  -i IN_FILE\t\tpath to the input (set-up test data) XML file(s). Comma-delimited (no spaces) for multiple files\n");
+		usage.append("  -o OUT_FILE\t\tpath to the output (expected results) XML file(s). Comma-delimited (no spaces) for multiple files\n");
+		usage.append("  -t TARGET\t\t(Optional) target table(s) to verify expected results. Comma-delimited (no spaces) for multiple files. Will be added to the clean list\n");
 		usage.append("  -l\t\t\tload input XML file(s).  Use with -i flag to define input files\n");
 		usage.append("  -d\t\t\tdump table contents to XML file. Use with -o flag to define (a single) output file, -t to define target table and -s to define the SQL\n");
 		usage.append("  -s SQL\t\tSQL query to execute against target table for dump. It must be in single or double quotes.\n");

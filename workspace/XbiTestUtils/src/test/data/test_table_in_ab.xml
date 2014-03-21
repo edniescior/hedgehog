@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <test_table_in_a NAME="FOO" CODE="F" SOME_DATE="1972-05-01 00:00:00.0"/>
+  <test_table_in_a NAME="BAR" CODE="B" SOME_DATE="1970-02-14 00:00:00.0"/>
+  <test_table_in_a NAME="CHU" CODE="C" SOME_DATE="1972-05-01 00:00:00.0"/>
+  <test_table_in_b CODE="F" SOME_NUMBER="1234"/>
+  <test_table_in_b CODE="B" SOME_NUMBER="4321"/>
+</dataset>
