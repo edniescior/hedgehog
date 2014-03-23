@@ -43,7 +43,8 @@ public class Connector {
 		try {
 			// Could be configuration-driven to support different kinds of
 			// databases.
-			// Override getConnection() as it insists on using the DefaultConnectionFactory otherwise
+			// Override getConnection() as it insists on using the
+			// DefaultConnectionFactory otherwise
 			databaseTester = new JdbcDatabaseTester("oracle.jdbc.OracleDriver",
 					url, username, password, schema) {
 				@Override
@@ -187,6 +188,20 @@ public class Connector {
 		// partial database export
 		QueryDataSet partialDataSet = new QueryDataSet(databaseConnection);
 		partialDataSet.addTable(tableName, queryFromTable);
+		FlatXmlDataSet.write(partialDataSet, new FileOutputStream(
+				fileOutputName));
+	}
+
+	public void dumpXml(Map<String, String> queryMap, String fileOutputName)
+			throws Exception {
+		QueryDataSet partialDataSet = new QueryDataSet(databaseConnection);
+		for (Map.Entry<String, String> entry : queryMap.entrySet()) {
+			String tableName = entry.getKey();
+			String query = entry.getValue();
+			LOGGER.info("Adding " + tableName + " with query " + query
+					+ " to XML dump file " + fileOutputName);
+			partialDataSet.addTable(tableName, query);
+		}
 		FlatXmlDataSet.write(partialDataSet, new FileOutputStream(
 				fileOutputName));
 	}

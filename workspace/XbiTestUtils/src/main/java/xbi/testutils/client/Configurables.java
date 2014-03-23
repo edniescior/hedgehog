@@ -2,7 +2,11 @@ package xbi.testutils.client;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +15,9 @@ import org.slf4j.LoggerFactory;
  * Helper class to parse, store and validate the CLI options passed.
  */
 public class Configurables {
+
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(Configurables.class);
 
 	public static enum Mode {
 		EXE, LOAD, DUMP, NONE;
@@ -21,7 +28,7 @@ public class Configurables {
 	private List<File> inFiles = new ArrayList<File>();
 	private List<File> outFiles = new ArrayList<File>();
 	private List<String> targetTables = new ArrayList<String>();
-	private String sql = null;
+	private Map<String, String> sqlMap = new HashMap<String, String>();
 
 	public Mode getMode() {
 		return mode;
@@ -69,8 +76,10 @@ public class Configurables {
 
 	public void setInFiles(String inFilesStr) {
 		String[] result = inFilesStr.split(",");
-		for (int x = 0; x < result.length; x++)
-			this.inFiles.add(new File(result[x]));
+		for (int x = 0; x < result.length; x++) {
+			String fName = result[x].trim();
+			this.inFiles.add(new File(fName));
+		}
 	}
 
 	public List<File> getOutFiles() {
@@ -79,8 +88,10 @@ public class Configurables {
 
 	public void setOutFiles(String outFilesStr) {
 		String[] result = outFilesStr.split(",");
-		for (int x = 0; x < result.length; x++)
-			this.outFiles.add(new File(result[x]));
+		for (int x = 0; x < result.length; x++) {
+			String fName = result[x].trim();
+			this.outFiles.add(new File(fName));
+		}
 	}
 
 	public List<String> getTargetTables() {
@@ -89,16 +100,42 @@ public class Configurables {
 
 	public void setTargetTables(String targetTablesStr) {
 		String[] result = targetTablesStr.split(",");
-		for (int x = 0; x < result.length; x++)
-			this.targetTables.add(result[x]);
+		for (int x = 0; x < result.length; x++) {
+			String tName = result[x].trim();
+			this.targetTables.add(tName);
+		}
 	}
 
-	public String getSql() {
-		return sql;
+	public Map<String, String> getSqlMap() {
+		return sqlMap;
 	}
 
-	public void setSql(String sql) {
-		this.sql = sql;
+	public void setSqlMap(String sqlMapStr) {
+		Pattern pattern = Pattern.compile("\\{([\\w:\\s,*.]+)\\}",
+				Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(sqlMapStr);
+
+		// pull all occurrences of the pattern
+		int mappingCount = 0;
+		while (matcher.find()) {
+			String thisMapping = matcher.group(1);
+			String[] result = thisMapping.split(":");
+			if (result.length == 2) {
+				addSqlMapEntry(result[0], result[1]);
+				mappingCount++;
+			}
+		}
+
+		if (mappingCount < 1) {
+			LOGGER.warn("No SQL mappings were parsed out of SQL map string \""
+					+ sqlMapStr + "\". Check the syntax.");
+		}
+	}
+
+	public void addSqlMapEntry(String tableName, String query) {
+		LOGGER.info("Adding SQL mapping for table \'" + tableName
+				+ "\' with query \'" + query + "\'");
+		sqlMap.put(tableName, query);
 	}
 
 	/**
@@ -128,17 +165,9 @@ public class Configurables {
 			}
 		// dump mode
 		else if (this.mode == Mode.DUMP) {
-			// are there output files provided
-			if (getOutFiles().isEmpty()) {
-				buffer.append("No output files passed in for DUMP. Use the -o flag to provide output files. ");
-			}
-			// is there a table name provided
-			if (getTargetTables().isEmpty()) {
-				buffer.append("No target table names passed in for DUMP. Use the -t flag to provide table names. ");
-			}
-			// is there a query provided
-			if (getSql() == null) {
-				buffer.append("No SQL query passed in for DUMP. Use the -s flag to provide a query. ");
+			// is there a query set provided
+			if (getSqlMap().isEmpty()) {
+				buffer.append("No SQL query set passed in for DUMP. Use the -s flag to provide a query set. ");
 			}
 		}
 		// execute mode
@@ -165,7 +194,8 @@ public class Configurables {
 			} else {
 				for (File f : getOutFiles()) {
 					if (!(f.exists() && f.canRead())) {
-						buffer.append("The expected output file " + f.getAbsolutePath()
+						buffer.append("The expected output file "
+								+ f.getAbsolutePath()
 								+ " does not exist or is not readable. ");
 					}
 				}
@@ -201,8 +231,12 @@ public class Configurables {
 				buf.append("," + targetTable.toString());
 			}
 		}
-		if (getSql() != null) {
-			buf.append(":sql=" + getSql());
+		if (!getSqlMap().isEmpty()) {
+			StringBuffer map = new StringBuffer(":sqlMap=");
+			for (Map.Entry<String, String> entry : getSqlMap().entrySet()) {
+				map.append("[" + entry.getKey() + ":" + entry.getValue() + "]");
+			}
+			buf.append(map.toString());
 		}
 		return buf.toString();
 
