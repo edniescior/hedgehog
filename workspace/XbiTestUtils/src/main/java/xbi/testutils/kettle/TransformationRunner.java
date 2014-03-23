@@ -60,6 +60,7 @@ public class TransformationRunner extends Runner {
 		for (CheckResultInterface remark : stepRemarks) {
 			if (remark.getType() == CheckResultInterface.TYPE_RESULT_ERROR) {
 				setState(Status.VERIFIED, false);
+				LOGGER.error(remark.toString());
 			}
 		}
 	}
