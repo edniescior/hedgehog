@@ -43,17 +43,26 @@ public class Connector {
 		try {
 			// Could be configuration-driven to support different kinds of
 			// databases.
+			// Override getConnection() as it insists on using the DefaultConnectionFactory otherwise
 			databaseTester = new JdbcDatabaseTester("oracle.jdbc.OracleDriver",
-					url, username, password, schema);
+					url, username, password, schema) {
+				@Override
+				public IDatabaseConnection getConnection() throws Exception {
+					IDatabaseConnection connection = super.getConnection();
+
+					connection.getConfig().setProperty(
+							DatabaseConfig.PROPERTY_DATATYPE_FACTORY,
+							new OracleDataTypeFactory());
+
+					return connection;
+				}
+			};
 			databaseConnection = databaseTester.getConnection();
 
 			DatabaseConfig databaseConfig = databaseConnection.getConfig();
 			databaseConfig.setProperty(
-					"http://www.dbunit.org/properties/datatypeFactory",
+					DatabaseConfig.PROPERTY_DATATYPE_FACTORY,
 					new OracleDataTypeFactory());
-//			databaseConfig.setProperty(
-//					DatabaseConfig.PROPERTY_DATATYPE_FACTORY,
-//					new OracleDataTypeFactory());
 
 			databaseDataSet = databaseConnection.createDataSet();
 		} catch (Exception e) {
@@ -143,7 +152,7 @@ public class Connector {
 		}
 		return dataSet;
 	}
-	
+
 	/**
 	 * Loads data into the DB from an XML file
 	 * 
