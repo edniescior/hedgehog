@@ -81,7 +81,7 @@ public class XbiTestUtilCli {
 	}
 
 	public static void printUsage() {
-		String exe = "java -jar XbiTestUtils-<version>.jar";
+		String exe = "java -cp .:./XbiTestUtils-{version}.jar:$KETTLE_INSTALL/lib/* xbi.testutils.client.XbiTestUtilCli";
 		StringBuffer usage = new StringBuffer();
 		usage.append("\nUsage: " + exe + " <options>\n");
 		usage.append("\n");
@@ -104,9 +104,14 @@ public class XbiTestUtilCli {
 		usage.append("data for TABLE_A in both FILE_A and FILE_B, FILE_A.TABLE_A data will be deleted \n");
 		usage.append("when FILE_B is loaded! \n");
 		usage.append("\n");
-		usage.append("Note: This utility relies on kettle.properties in KETTLE_HOME for configuration. It uses the \n");
+		usage.append("Notes: \n");
+		usage.append("\n");
+		usage.append("(1) This utility relies on kettle.properties in KETTLE_HOME for configuration. It uses the \n");
 		usage.append("following entries to connect to the DB: XBIS_DBNAME, XBIS_STG_USER, XBIS_STG_PASSWORD \n");
 		usage.append("(encrypted) and XBIS_STG_SCHEMA. At this point, it is hard-coded to only work with Oracle.\n");
+		usage.append("\n");
+		usage.append("(2) This utility relies on your local Kettle install libraries. Hence, the environment variable \n");
+		usage.append("KETTLE_INSTALL must be set in your local environment. See Confluence for more details.  \n");
 		usage.append("\n");
 		usage.append("Options:\n");
 		usage.append("  -h\t\t\tshow this help message and exit\n");

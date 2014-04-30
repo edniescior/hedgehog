@@ -4,7 +4,7 @@
 	<groupId>com.comcast.xbi</groupId>
 	<artifactId>XbiTestUtils</artifactId>
 	<packaging>jar</packaging>
-	<version>1.7</version>
+	<version>1.8</version>
 	<name>XbiTestUtils</name>
 	<url>http://maven.apache.org</url>
 
@@ -101,51 +101,57 @@
 								</filter>
 								<filter>
 									<artifact>log4j:log4j</artifact>
-									<includes>
-										<include>**</include>
-									</includes>
+									<excludes>
+										<exclude>**</exclude>
+									</excludes>
 								</filter>
 								<filter>
 									<artifact>commons-logging:commons-logging</artifact>
-									<includes>
-										<include>**</include>
-									</includes>
+									<excludes>
+										<exclude>**</exclude>
+									</excludes>
 								</filter>
 								<filter>
 									<artifact>commons-vfs:commons-vfs</artifact>
-									<includes>
-										<include>**</include>
-									</includes>
+									<excludes>
+										<exclude>**</exclude>
+									</excludes>
 								</filter>
 								<filter>
 									<artifact>xerces:xercesImpl</artifact>
-									<includes>
-										<include>**</include>
-									</includes>
+									<excludes>
+										<exclude>**</exclude>
+									</excludes>
 								</filter>
 								<filter>
 									<artifact>com.oracle:ojdbc6</artifact>
-									<includes>
-										<include>**</include>
-									</includes>
+									<excludes>
+										<exclude>**</exclude>
+									</excludes>
 								</filter>
 								<filter>
 									<artifact>pentaho-kettle:kettle-core</artifact>
-									<includes>
-										<include>**</include>
-									</includes>
+									<excludes>
+										<exclude>**</exclude>
+									</excludes>
 								</filter>
 								<filter>
 									<artifact>pentaho-kettle:kettle-engine</artifact>
-									<includes>
-										<include>**</include>
-									</includes>
+									<excludes>
+										<exclude>**</exclude>
+									</excludes>
 								</filter>
 								<filter>
+                                                                        <artifact>pentaho:metastore</artifact>
+                                                                        <excludes>
+                                                                                <exclude>**</exclude>
+                                                                        </excludes>
+                                                                </filter>
+								<filter>
 									<artifact>janino:janino</artifact>
-									<includes>
-										<include>**</include>
-									</includes>
+									<excludes>
+										<exclude>**</exclude>
+									</excludes>
 								</filter>
 							</filters>
 							<transformers>
