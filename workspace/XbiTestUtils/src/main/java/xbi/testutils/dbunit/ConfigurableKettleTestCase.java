@@ -3,6 +3,7 @@ package xbi.testutils.dbunit;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -82,6 +83,12 @@ public class ConfigurableKettleTestCase extends KettleTestCase {
 			connector.loadDataSet(inFile);
 			LOGGER.info("Loading input test file: " + inFile.getAbsolutePath());
 		}
+		
+		// set parameters, if any
+		for (Map.Entry<String, String> entry : config.getParams().entrySet()) {
+			runner.setParameterValue(entry.getKey(), entry.getValue());
+		}
+		
 	}
 
 	@Test

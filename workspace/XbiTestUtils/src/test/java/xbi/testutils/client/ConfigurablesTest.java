@@ -103,4 +103,32 @@ public class ConfigurablesTest {
 		Assert.assertEquals("bar", configurable.getSqlMap().get("foo"));
 	}
 	
+	@Test
+	public void setInvalidParamStringNoEquals() {
+		Configurables configurable = new Configurables();
+		String pString = "somerandomstring:huh";
+		configurable.setParamsMap(pString);
+		Assert.assertEquals(0, configurable.getParams().size());
+	}
+	
+	@Test
+	public void setSingleParamString() {
+		Configurables configurable = new Configurables();
+		String pString = "paramName=paramValue";
+		configurable.setParamsMap(pString);
+		Assert.assertEquals(1, configurable.getParams().size());
+		Assert.assertEquals("paramValue", configurable.getParams().get("paramName"));
+	}
+	
+	@Test
+	public void setMultiParamString() {
+		Configurables configurable = new Configurables();
+		String pString = "param_Name=param_Value,foo=bar,zoom=mooz";
+		configurable.setParamsMap(pString);
+		Assert.assertEquals(3, configurable.getParams().size());
+		Assert.assertEquals("param_Value", configurable.getParams().get("param_Name"));
+		Assert.assertEquals("bar", configurable.getParams().get("foo"));
+		Assert.assertEquals("mooz", configurable.getParams().get("zoom"));
+	}
+	
 }

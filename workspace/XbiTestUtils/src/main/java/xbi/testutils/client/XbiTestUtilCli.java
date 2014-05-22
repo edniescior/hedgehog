@@ -120,6 +120,8 @@ public class XbiTestUtilCli {
 		usage.append("  -o OUT_FILES\t\tpath to the output (expected results) XML file(s). Comma-delimited (no spaces) for multiple files\n");
 		usage.append("  -t TARGET_TABLES\t(Optional) target table(s) to compare expected results against. Table(s) will be truncated after each test.\n");
 		usage.append("  \t\t\t\tComma-delimited (no spaces) for multiple tables.\n");
+		usage.append("  -p PARAMETERS\t(Optional) parameters to pass to the transformation in the form paramName=paramValue.\n");
+		usage.append("  \t\t\t\tComma-delimited (no spaces) for multiple parameters.\n");
 		usage.append("  -l\t\t\tload input XML file(s).  Use with -i flag to define input files\n");
 		usage.append("  -d DUMP_FILE\t\tdump table contents to XML file. Use with -s flag to define the SQL query set(s).\n");
 		usage.append("  -s SQL_QUERY_SET\tTable name and SQL query pairing to execute for dump. The query set must take the form {Table Name:'SQL query'}. \n");
@@ -135,14 +137,14 @@ public class XbiTestUtilCli {
 				+ " -d /Users/xbi/output.xml -s {table_name1:\'select * from some_table_name\'},{table_name2:'select col1, col2 from another_table\'}\n");
 		usage.append("  Executing a test:\t$ "
 				+ exe
-				+ " -x /Users/xbi/test.ktr -i /Users/xbi/input.xml -o /Users/xbi/output.xml -t target_table1");
+				+ " -x /Users/xbi/test.ktr -i /Users/xbi/input.xml -o /Users/xbi/output.xml -t target_table1 -p foo=bar");
 		usage.append("\n");
 		System.out.println(usage);
 		System.exit(0);
 	}
 
 	public static void main(String[] args) {
-		final GetOpt getopt = new GetOpt(args, "hx:ld:i:o:t:s:");
+		final GetOpt getopt = new GetOpt(args, "hx:ld:i:o:t:s:p:");
 		if (args.length < 1)
 			printUsage();
 
@@ -186,6 +188,10 @@ public class XbiTestUtilCli {
 				case 's':
 					optsStr.append("s");
 					client.configurables.setSqlMap(optArg);
+					break;
+				case 'p':
+					optsStr.append("p");
+					client.configurables.setParamsMap(optArg);
 					break;
 				default:
 					optsStr.append("?");

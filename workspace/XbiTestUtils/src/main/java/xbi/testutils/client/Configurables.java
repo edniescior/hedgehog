@@ -29,6 +29,7 @@ public class Configurables {
 	private List<File> outFiles = new ArrayList<File>();
 	private List<String> targetTables = new ArrayList<String>();
 	private Map<String, String> sqlMap = new HashMap<String, String>();
+	private Map<String, String> params = new HashMap<String, String>();
 
 	public Mode getMode() {
 		return mode;
@@ -136,6 +137,38 @@ public class Configurables {
 		LOGGER.info("Adding SQL mapping for table \'" + tableName
 				+ "\' with query \'" + query + "\'");
 		sqlMap.put(tableName, query);
+	}
+
+	public Map<String, String> getParams() {
+		return params;
+	}
+
+	public void setParamsMap(String paramStr) {
+		Pattern pattern = Pattern.compile("([a-zA-Z0-9-_]+=[a-zA-Z0-9-_]+)",
+				Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(paramStr);
+
+		// pull all occurrences of the pattern
+		int mappingCount = 0;
+		while (matcher.find()) {
+			String thisMapping = matcher.group(1);
+			String[] result = thisMapping.split("=");
+			if (result.length == 2) {
+				addParameterMapEntry(result[0], result[1]);
+				mappingCount++;
+			}
+		}
+
+		if (mappingCount < 1) {
+			LOGGER.warn("No parameter mappings were parsed out of the param map string \""
+					+ paramStr + "\". Check the syntax.");
+		}
+	}
+
+	public void addParameterMapEntry(String pName, String pValue) {
+		LOGGER.info("Adding parameter \'" + pName + "\' with value \'" + pValue
+				+ "\'");
+		params.put(pName, pValue);
 	}
 
 	/**

@@ -24,6 +24,8 @@ public class SampleTransformationTest extends KettleTestCase {
 	protected void afterSetup() {
 		connector.loadDataSet(new File(
 				"/Users/eniesc200/Work/hedgehog/workspace/XbiTestUtils/src/test/data/test_table_in_ab.xml"));
+		
+		runner.setParameterValue("property", "propertyValue");
 	}
 
 	@Test
