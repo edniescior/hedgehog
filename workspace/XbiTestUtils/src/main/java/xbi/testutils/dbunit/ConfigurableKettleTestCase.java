@@ -71,7 +71,7 @@ public class ConfigurableKettleTestCase extends KettleTestCase {
 
 	@Override
 	public void registerObjectsForCleanup() {
-		for (String table : config.getTargetTables()) {
+		for (String table : config.getTargetTables().keySet()) {
 			connector.registerTableForCleanup(table);
 			LOGGER.info("Registered " + table + " for cleanup");
 		}
@@ -116,10 +116,15 @@ public class ConfigurableKettleTestCase extends KettleTestCase {
 			throw new IllegalStateException(
 					"Unable to run comparisons. There are more expected result files than there are target tables.");
 		}
-		for (String targetTable : config.getTargetTables()) {
+		for (String targetTable : config.getTargetTables().keySet()) {
 			LOGGER.info("Comparing table " + targetTable + " against expected result set "
 					+ config.getOutFiles().get(index).getName());
-			compareDataSets(targetTable, config.getOutFiles().get(index));
+			String[] orderCols = config.getTargetTables().get(targetTable);
+			if (orderCols == null || orderCols.length == 0) {
+				compareDataSets(targetTable, config.getOutFiles().get(index));  // natural ordering
+			} else {
+				compareDataSets(targetTable, config.getOutFiles().get(index), orderCols); // order by column names
+			}
 			if (!combinedResultFile) {
 				index++;
 			}

@@ -9,6 +9,8 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.dbunit.Assertion;
+import org.dbunit.DatabaseUnitException;
+import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.SortedTable;
@@ -72,7 +74,8 @@ public abstract class KettleTestCase {
 			// Note that the following system properties are set via the
 			// kettle.properties file under KETTLE_HOME
 			// Hard-coded to use Oracle, but that could be made configurable.
-			String url = "jdbc:oracle:thin:@" + System.getProperty("XBIS_DBNAME");
+			String url = "jdbc:oracle:thin:@"
+					+ System.getProperty("XBIS_DBNAME");
 			String username = System.getProperty("XBIS_STG_USER");
 			String password = Encr.decryptPasswordOptionallyEncrypted(System
 					.getProperty("XBIS_STG_PASSWORD"));
@@ -122,30 +125,60 @@ public abstract class KettleTestCase {
 	 *            XML file
 	 */
 	protected void compareDataSets(String tableName, File expected) {
-		// Fetch database data after executing your code
+		compareDataSets(tableName, expected, null);
+	}
+
+	/**
+	 * Compare a database table to a DBUnit XML file, with ordering specified
+	 * 
+	 * @param tableName
+	 *            schema-qualified table name
+	 * @param expected
+	 *            XML file
+	 * @param orderByCols
+	 *            column names to order by (ascending)
+	 */
+	protected void compareDataSets(String tableName, File expected,
+			String[] orderByCols) {
+
 		try {
-			ITable actualTable = connector.getDatabaseDataSet().getTable(
-					tableName);
 
-			// Load expected data from an XML dataset
+			// Load expected data from an XML data set.
 			IDataSet expectedDataSet = connector.buildDataSet(expected);
+			ITable rawExpectedTable = expectedDataSet.getTable(tableName);
 
-			ITable expectedTable = new SortedTable(
-					expectedDataSet.getTable(tableName));
-			ITable filteredTable = DefaultColumnFilter.includedColumnsTable(
-					actualTable, expectedTable.getTableMetaData().getColumns());
+			// Load actual data from database and filter out unwanted columns
+			// based in the XML expected data set.
+			ITable rawActualTable = connector.getDatabaseDataSet().getTable(
+					tableName);
+			ITable filteredActualTable = DefaultColumnFilter
+					.includedColumnsTable(rawActualTable, rawExpectedTable
+							.getTableMetaData().getColumns());
 
-			// ITable sortedAndFilteredTable = new SortedTable(new
-			// RowFilterTable(
-			// filteredTable, new UnknownRowFilter()));
-			ITable sortedAndFilteredTable = new SortedTable(filteredTable);
+			// Sort data sets by their own columns as defined by the ITable
+			// metadata, unless order by explicitly defined.
+			// NB. No actual sorting (shuffling indexes) occurs until the data set 
+			// is accessed for the first time, i.e. later in the assert.
+			SortedTable expectedTable = null;
+			SortedTable actualTable = null;
+			if (orderByCols == null || orderByCols.length == 0) {
+				expectedTable = new SortedTable(rawExpectedTable);
+				actualTable = new SortedTable(filteredActualTable);
+			} else {
+				expectedTable = new SortedTable(rawExpectedTable, orderByCols);
+				expectedTable.setUseComparable(true); // must be called right after constructor
+				actualTable = new SortedTable(filteredActualTable, orderByCols);
+				actualTable.setUseComparable(true);  // must be called right after constructor
+			}
 
-			// Assert actual database table match expected table
-			Assertion.assertEquals(expectedTable, sortedAndFilteredTable);
-
-		} catch (Exception e) {
+			// No sorting 
+			Assertion.assertEquals(expectedTable, actualTable);
+		} catch (DataSetException e) {
 			LOGGER.error(e.getMessage());
 			fail(e.toString());
+		} catch (DatabaseUnitException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

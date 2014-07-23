@@ -32,7 +32,7 @@ public class SampleTransformationTest extends KettleTestCase {
 	public void sampleTransformation() throws Exception {
 		assertComplete();
 		compareDataSets("test_table_out", new File(
-				"/Users/eniesc200/Work/hedgehog/workspace/XbiTestUtils/src/test/data/test_table_out.xml"));
+				"/Users/eniesc200/Work/hedgehog/workspace/XbiTestUtils/src/test/data/test_table_out.xml"), new String[]{"CODE", "SOME_DATE"});
 		compareDataSets("test_table_out2", new File(
 				"/Users/eniesc200/Work/hedgehog/workspace/XbiTestUtils/src/test/data/test_table_out.xml"));
 	}

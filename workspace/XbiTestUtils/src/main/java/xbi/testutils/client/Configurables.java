@@ -2,6 +2,7 @@ package xbi.testutils.client;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,9 +28,18 @@ public class Configurables {
 	private File xmlFile = null;
 	private List<File> inFiles = new ArrayList<File>();
 	private List<File> outFiles = new ArrayList<File>();
-	private List<String> targetTables = new ArrayList<String>();
 	private Map<String, String> sqlMap = new HashMap<String, String>();
 	private Map<String, String> params = new HashMap<String, String>();
+	private Map<String, String[]> targetTables = new HashMap<String, String[]>(); // table
+																					// name
+																					// ->
+																					// order
+																					// by
+																					// column
+																					// names
+
+	// regex for parsing parameter formats that use {:} formatting
+	private final static String CURLY_BRACE_FORMAT_REGEX = "\\{([\\w:\\s,*.]+)\\}";
 
 	public Mode getMode() {
 		return mode;
@@ -95,16 +105,61 @@ public class Configurables {
 		}
 	}
 
-	public List<String> getTargetTables() {
+	public Map<String, String[]> getTargetTables() {
 		return targetTables;
 	}
 
 	public void setTargetTables(String targetTablesStr) {
-		String[] result = targetTablesStr.split(",");
-		for (int x = 0; x < result.length; x++) {
-			String tName = result[x].trim();
-			this.targetTables.add(tName);
+		Pattern pattern = Pattern.compile(CURLY_BRACE_FORMAT_REGEX,
+				Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(targetTablesStr);
+
+		// pull all occurrences of the pattern
+		int mappingCount = 0;
+		while (matcher.find()) {
+			String thisMapping = matcher.group(1);
+			String[] result = thisMapping.split(":");
+			if (result.length > 0 && result.length < 3) {
+				String tableName = result[0];
+				if (result.length == 1) {
+					addTargetTableMapEntry(tableName, null);
+				} else {
+					String[] colNames = result[1].split(",");
+					for (int x = 0; x < colNames.length; x++) {
+						String cName = colNames[x].trim();
+						addTargetTableMapEntry(tableName, cName);
+					}
+				}
+				mappingCount++;
+			}
 		}
+
+		if (mappingCount < 1) {
+			LOGGER.warn("No Order By mappings were parsed out of Target Table string \""
+					+ targetTablesStr + "\". Check the syntax.");
+		}
+	}
+
+	public void addTargetTableMapEntry(String tableName,
+			String orderByColumnName) {
+		LOGGER.info("Adding Order By mapping for table \'" + tableName
+				+ "\' with column name \'" + orderByColumnName + "\'");
+
+		List<String> colNames = new ArrayList<String>();
+		if (targetTables.containsKey(tableName)) {
+			colNames = new ArrayList<String>(Arrays.asList(targetTables
+					.get(tableName)));
+		}
+
+		// filter out dupes
+		if (orderByColumnName != null && !colNames.contains(orderByColumnName)) {
+			colNames.add(orderByColumnName);
+		}
+
+		String[] colArray = new String[colNames.size()];
+		colArray = colNames.toArray(colArray);
+
+		targetTables.put(tableName, colArray);
 	}
 
 	public Map<String, String> getSqlMap() {
@@ -112,7 +167,7 @@ public class Configurables {
 	}
 
 	public void setSqlMap(String sqlMapStr) {
-		Pattern pattern = Pattern.compile("\\{([\\w:\\s,*.]+)\\}",
+		Pattern pattern = Pattern.compile(CURLY_BRACE_FORMAT_REGEX,
 				Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(sqlMapStr);
 
@@ -260,7 +315,7 @@ public class Configurables {
 		}
 		if (!getTargetTables().isEmpty()) {
 			buf.append(":targetTables=");
-			for (String targetTable : getTargetTables()) {
+			for (String targetTable : getTargetTables().keySet()) {
 				buf.append("," + targetTable.toString());
 			}
 		}

@@ -21,6 +21,7 @@ DROP TABLE test_table_out;
 
 CREATE TABLE test_table_out
 (
+        some_generated_key number(2),
 	name varchar(12),
 	code varchar(12),
 	some_date date,

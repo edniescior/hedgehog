@@ -3,6 +3,13 @@
   <test_table_in_a NAME="FOO" CODE="F" SOME_DATE="1972-05-01 00:00:00.0"/>
   <test_table_in_a NAME="BAR" CODE="B" SOME_DATE="1970-02-14 00:00:00.0"/>
   <test_table_in_a NAME="CHU" CODE="C" SOME_DATE="1972-05-01 00:00:00.0"/>
+  <test_table_in_a NAME="ZEN" CODE="Y" SOME_DATE="1972-05-01 00:00:00.0"/>
+  <test_table_in_a NAME="YIN" CODE="Y" SOME_DATE="1972-05-03 00:00:00.0"/>
+  <test_table_in_a NAME="XUU" CODE="Z" SOME_DATE="1972-05-02 00:00:00.0"/>
   <test_table_in_b CODE="F" SOME_NUMBER="1234"/>
   <test_table_in_b CODE="B" SOME_NUMBER="4321"/>
+  <test_table_in_b CODE="Y" SOME_NUMBER="2222"/>
+  <test_table_in_b CODE="Z" SOME_NUMBER="3333"/>
+
+  <test_table_out SOME_GENERATED_KEY="-1" />  
 </dataset>

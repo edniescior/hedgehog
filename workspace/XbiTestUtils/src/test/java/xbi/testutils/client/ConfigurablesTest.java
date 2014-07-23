@@ -50,21 +50,81 @@ public class ConfigurablesTest {
 	}
 	
 	@Test
-	public void setSingleTargetTables() {
+	public void setInvalidTargetTablesNoBraces() {
 		Configurables configurable = new Configurables();
-		configurable.setTargetTables("targettable1");
-		Assert.assertEquals(1, configurable.getTargetTables().size());
-		Assert.assertEquals("targettable1", configurable.getTargetTables().get(0).toString());
+		String targetTabStr = "somerandomstring:huh";
+		configurable.setTargetTables(targetTabStr);
+		Assert.assertEquals(0, configurable.getTargetTables().size());
 	}
 	
 	@Test
-	public void setMultiTargetTables() {
+	public void setInvalidTargetTablesNoColon() {
 		Configurables configurable = new Configurables();
-		configurable.setTargetTables("targettable1,targettable2, targettable3");
+		String targetTabStr = "{onlyasinglestring}";
+		configurable.setTargetTables(targetTabStr);
+		Assert.assertEquals(1, configurable.getTargetTables().size());
+	}
+	
+	@Test
+	public void setSingleTargetTablesNatOrder() {
+		Configurables configurable = new Configurables();
+		configurable.setTargetTables("{targettable1:}");
+		Assert.assertEquals(1, configurable.getTargetTables().size());
+		Assert.assertTrue(configurable.getTargetTables().containsKey("targettable1"));
+		Assert.assertEquals(0, configurable.getTargetTables().get("targettable1").length);
+	}
+	
+	@Test
+	public void setMultiTargetTablesNatOrder() {
+		Configurables configurable = new Configurables();
+		configurable.setTargetTables("{targettable1:},{targettable2:},{targettable3:}");
 		Assert.assertEquals(3, configurable.getTargetTables().size());
-		Assert.assertEquals("targettable1", configurable.getTargetTables().get(0).toString());
-		Assert.assertEquals("targettable2", configurable.getTargetTables().get(1).toString());
-		Assert.assertEquals("targettable3", configurable.getTargetTables().get(2).toString());
+		Assert.assertTrue(configurable.getTargetTables().containsKey("targettable1"));
+		Assert.assertEquals(0, configurable.getTargetTables().get("targettable1").length);
+		Assert.assertTrue(configurable.getTargetTables().containsKey("targettable2"));
+		Assert.assertEquals(0, configurable.getTargetTables().get("targettable2").length);
+		Assert.assertTrue(configurable.getTargetTables().containsKey("targettable3"));
+		Assert.assertEquals(0, configurable.getTargetTables().get("targettable3").length);
+	}
+	
+	@Test
+	public void setSingleTargetTablesWithOrder() {
+		Configurables configurable = new Configurables();
+		configurable.setTargetTables("{targettable1:colname1}");
+		Assert.assertEquals(1, configurable.getTargetTables().size());
+		Assert.assertEquals("colname1", configurable.getTargetTables().get("targettable1")[0]);
+	}
+	
+	@Test
+	public void setMultiTargetTablesWithOrder() {
+		Configurables configurable = new Configurables();
+		configurable.setTargetTables("{targettable1:colname1,colname2},{targettable2:},{targettable3:colname1,colname4,colname3}");
+		
+		Assert.assertTrue(configurable.getTargetTables().containsKey("targettable1"));
+		Assert.assertEquals(2, configurable.getTargetTables().get("targettable1").length);
+		Assert.assertEquals("colname1", configurable.getTargetTables().get("targettable1")[0]);
+		Assert.assertEquals("colname2", configurable.getTargetTables().get("targettable1")[1]);
+		
+		Assert.assertTrue(configurable.getTargetTables().containsKey("targettable2"));
+		Assert.assertEquals(0, configurable.getTargetTables().get("targettable2").length);
+		
+		Assert.assertTrue(configurable.getTargetTables().containsKey("targettable3"));
+		Assert.assertEquals(3, configurable.getTargetTables().get("targettable3").length);
+		Assert.assertEquals("colname1", configurable.getTargetTables().get("targettable3")[0]);
+		Assert.assertEquals("colname4", configurable.getTargetTables().get("targettable3")[1]);
+		Assert.assertEquals("colname3", configurable.getTargetTables().get("targettable3")[2]);
+	}
+	
+	@Test
+	public void setSingleTargetTablesWithOrderDupe() {
+		Configurables configurable = new Configurables();
+		configurable.setTargetTables("{targettable1:colname1,colname4,colname1,colname3}");
+		
+		Assert.assertTrue(configurable.getTargetTables().containsKey("targettable1"));
+		Assert.assertEquals(3, configurable.getTargetTables().get("targettable1").length);
+		Assert.assertEquals("colname1", configurable.getTargetTables().get("targettable1")[0]);
+		Assert.assertEquals("colname4", configurable.getTargetTables().get("targettable1")[1]);
+		Assert.assertEquals("colname3", configurable.getTargetTables().get("targettable1")[2]);
 	}
 	
 	@Test

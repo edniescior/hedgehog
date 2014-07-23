@@ -119,6 +119,8 @@ public class XbiTestUtilCli {
 		usage.append("  -i IN_FILES\t\tpath to the input (set-up test data) XML file(s). Comma-delimited (no spaces) for multiple files\n");
 		usage.append("  -o OUT_FILES\t\tpath to the output (expected results) XML file(s). Comma-delimited (no spaces) for multiple files\n");
 		usage.append("  -t TARGET_TABLES\t(Optional) target table(s) to compare expected results against. Table(s) will be truncated after each test.\n");
+		usage.append("  \t\t\t\tEach entry for a table should take the form {Table Name:Column Name 1, Column Name2} if ordering is required;\n");
+		usage.append("  \t\t\t\tOtherwise, just {Table Name:} if ordering is NOT required. (DBUnit will use 'natural' ordering in this case.)\n");
 		usage.append("  \t\t\t\tComma-delimited (no spaces) for multiple tables.\n");
 		usage.append("  -p PARAMETERS\t(Optional) parameters to pass to the transformation in the form paramName=paramValue.\n");
 		usage.append("  \t\t\t\tComma-delimited (no spaces) for multiple parameters.\n");
@@ -137,7 +139,7 @@ public class XbiTestUtilCli {
 				+ " -d /Users/xbi/output.xml -s {table_name1:\'select * from some_table_name\'},{table_name2:'select col1, col2 from another_table\'}\n");
 		usage.append("  Executing a test:\t$ "
 				+ exe
-				+ " -x /Users/xbi/test.ktr -i /Users/xbi/input.xml -o /Users/xbi/output.xml -t target_table1 -p foo=bar");
+				+ " -x /Users/xbi/test.ktr -i /Users/xbi/input.xml -o /Users/xbi/output.xml -t {target_table1:col1,col2},{target_table2:} -p foo=bar");
 		usage.append("\n");
 		System.out.println(usage);
 		System.exit(0);
