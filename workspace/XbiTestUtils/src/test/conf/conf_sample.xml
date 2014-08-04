@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestSuite>
+<Test name="DBUnit test" type="KTR">
+    <Executable>/Users/eniesc200/Work/hedgehog/workspace/XbiTestUtils/src/test/pentaho/tr_test_dbunit_file.ktr</Executable>
+    <TestData>
+    	<InputFile>/Users/eniesc200/Work/hedgehog/workspace/XbiTestUtils/src/test/data/test_table_in_ab.xml</InputFile>
+    </TestData>
+    <ExpectedResults>
+    	<OutputFile>/Users/eniesc200/Work/hedgehog/workspace/XbiTestUtils/src/test/data/test_table_out.xml</OutputFile>
+    </ExpectedResults>
+    <TargetTables>
+    	<TargetTable name="test_table_out">
+    		<OrderBy>CODE</OrderBy>
+    		<OrderBy>SOME_DATE</OrderBy>
+    	</TargetTable>
+    	<TargetTable name="test_table_out2"/>
+    </TargetTables>
+    <Parameters>
+    	<Param name="property">FOO</Param>	
+    	<Param name="MAX_KEY">7</Param>
+    </Parameters>
+</Test>
+</TestSuite>

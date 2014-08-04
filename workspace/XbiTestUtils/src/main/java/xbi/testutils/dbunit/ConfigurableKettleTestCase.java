@@ -11,7 +11,6 @@ import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import xbi.testutils.client.Configurables;
 
 /**
  * A dynamic KettleTestCase that is configured at run time. It uses the
@@ -26,17 +25,17 @@ public class ConfigurableKettleTestCase extends KettleTestCase {
 
 	// the active Configurable object for a given test. This is what gets passed
 	// in as a param by JUnit
-	private Configurables config;
+	private KettleTestCaseConfiguration config;
 
 	// JUnit needs all the Configurables in place before execution, hence this
 	// static collection to hold them
-	private static Collection<Configurables[]> configurables = new ArrayList<Configurables[]>();
+	private static Collection<KettleTestCaseConfiguration[]> configurables = new ArrayList<KettleTestCaseConfiguration[]>();
 
 	/**
 	 * Constructor. Called for each parameter configured by the client.
 	 */
-	public ConfigurableKettleTestCase(Configurables c) {
-		super(c.getXmlFile());
+	public ConfigurableKettleTestCase(KettleTestCaseConfiguration c) {
+		super(c.getExecutableFile());
 		this.config = c;
 	}
 
@@ -47,8 +46,8 @@ public class ConfigurableKettleTestCase extends KettleTestCase {
 	 * @param c
 	 *            a Configurables object to be tested.
 	 */
-	public static void addConfigurable(Configurables c) {
-		configurables.add(new Configurables[] { c });
+	public static void addConfiguration(KettleTestCaseConfiguration c) {
+		configurables.add(new KettleTestCaseConfiguration[] { c });
 	}
 
 	/**
@@ -61,7 +60,7 @@ public class ConfigurableKettleTestCase extends KettleTestCase {
 	 *             if a call is made prior to any Configurables being added.
 	 */
 	@Parameterized.Parameters
-	public static Collection<Configurables[]> getConfig() {
+	public static Collection<KettleTestCaseConfiguration[]> getConfig() {
 		if (configurables.isEmpty()) {
 			throw new IllegalStateException(
 					"No Configurable objects have been defined for this test case. Call addConfigurable() first.");
