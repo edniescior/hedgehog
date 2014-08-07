@@ -87,6 +87,7 @@ class ExecuteKettleArtifactMode extends Mode {
 					+ config.getAbsolutePath()
 					+ " does not exist or cannot be read.");
 		}
+		LOGGER.debug("Parsing config file: " + config.getAbsolutePath());
 
 		KettleTestCaseConfiguration.Builder builder = null;
 		SAXBuilder saxBuilder = new SAXBuilder();
@@ -106,6 +107,7 @@ class ExecuteKettleArtifactMode extends Mode {
 		Element root = doc.getRootElement();
 
 		List<Element> tests = root.getChildren("Test");
+		LOGGER.debug("Num tests found: " + tests.size());
 		for (Element test : tests) {
 			LOGGER.debug("Set Config: Test = " + test.getAttributeValue("name"));
 
