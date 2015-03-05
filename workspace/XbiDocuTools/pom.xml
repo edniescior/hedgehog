@@ -18,21 +18,39 @@
 
 	<build>
 		<plugins>
+			<!-- <plugin> <groupId>net.alchim31.maven</groupId> <artifactId>scala-maven-plugin</artifactId> 
+				<version>3.2.0</version> <executions> <execution> this is so we don't end 
+				with a compile error in maven-compiler-plugin <phase>process-sources</phase> 
+				<goals> <goal>compile</goal> <goal>testCompile</goal> </goals> <configuration> 
+				<mainSourceDir>${project.build.sourceDirectory}/../java</mainSourceDir> </configuration> 
+				</execution> </executions> </plugin> -->
 			<plugin>
-				<groupId>net.alchim31.maven</groupId>
-				<artifactId>scala-maven-plugin</artifactId>
-				<version>3.2.0</version>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>com.comcast.xbi.docutools.XbiDocuTool</mainClass>
+							<addClasspath>true</addClasspath>
+							<classpathLayoutType>custom</classpathLayoutType>
+							<customClasspathLayout>lib/$${artifact.artifactId}-$${artifact.version}$${dashClassifier?}.$${artifact.extension}
+							</customClasspathLayout>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.10</version>
+				<configuration>
+					<outputDirectory>${project.build.directory}/lib</outputDirectory>
+				</configuration>
 				<executions>
 					<execution>
-						<!-- this is so we don't end with a compile error in maven-compiler-plugin -->
-						<phase>process-sources</phase>
+						<phase>package</phase>
 						<goals>
-							<goal>compile</goal>
-							<goal>testCompile</goal>
+							<goal>copy-dependencies</goal>
 						</goals>
-						<configuration>
-							<mainSourceDir>${project.build.sourceDirectory}/../java</mainSourceDir>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
