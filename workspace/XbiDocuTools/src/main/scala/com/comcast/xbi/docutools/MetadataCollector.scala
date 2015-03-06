@@ -24,15 +24,15 @@ case class MetadataCollector(conf: Config) {
     val s1 = con.prepareStatement("SELECT COLS.TABLE_NAME, COLS.COLUMN_ID, COLS.COLUMN_NAME, COLS.DATA_TYPE, COLS.DATA_LENGTH, COLS.DATA_PRECISION, COLS.NULLABLE, COMS.COMMENTS"
       + " FROM ALL_TAB_COLS COLS"
       + " JOIN ALL_COL_COMMENTS COMS ON COMS.OWNER = COLS.OWNER AND COMS.TABLE_NAME = COLS.TABLE_NAME AND COMS.COLUMN_NAME = COLS.COLUMN_NAME"
-      + " WHERE COLS.OWNER = \'ENIESCIOR\'"
+      + " WHERE COLS.OWNER IN (\'XBI_PRES\', \'XBI_ODS\')"
       + " AND COLS.TABLE_NAME = :tabname "
       + " ORDER BY COLS.TABLE_NAME, COLS.COLUMN_ID")
 
     val s2 = con.createStatement()
     val rs2 = s2.executeQuery("SELECT TABS.OWNER, TABS.TABLE_NAME, TABS.TABLE_TYPE, TABS.COMMENTS "
       + "FROM ALL_TAB_COMMENTS TABS "
-      + "WHERE TABS.OWNER IN (\'ENIESCIOR\') "
-      + "AND TABS.TABLE_NAME like (\'W_%_D\') "
+      + "WHERE TABS.OWNER IN (\'XBI_PRES\', \'XBI_ODS\') "
+      + "AND TABS.TABLE_NAME NOT like (\'%_MV\') "
       + "ORDER BY TABS.TABLE_NAME ")
 
     // Loop through the tables

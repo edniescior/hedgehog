@@ -4,6 +4,7 @@ Edward Niescior <Edward_Niescior@cable.comcast.com>
 v0.1, 2015-02-01
 :icons: font
 :imagesdir: ./
+:data-uri:
 :toc:
 :toclevels: 3
 :description: This document is the data dictionary for the XBI data warehouse (DW) and Operational Data Store (ODS).
